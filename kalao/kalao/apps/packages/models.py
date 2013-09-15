@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
 from hotels.models import Hotel, Rate
-from references.models import Room, Transfer
+from references.models import Room, Transfer, ExchangeRate
 
 # Create your models here.
 class Package(models.Model):
@@ -34,6 +34,17 @@ class PackageBatch(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="batches_created")
     modified_by = models.ForeignKey(User, related_name="batches_modified")
+
+    def get_total(self, amount):
+        now = datetime.now()
+        xrate = ExchangeRate.objects.filter(date_from__lte=now, date_to__gte=now)
+        if xrate.count() == 0:
+            raise Exception("No exchange rate for today, define exchange rate ranging within today")
+        else:
+            xrate = xrate[0]
+
+        total = float((float(self.package.markup_amount) + float(amount)) / float(xrate.rate))
+        return "USD %s" % round(total,2)
 
     def get_hotels_total_rate(self, persons=1, extra_bed=False):
         total_rate = 0
@@ -79,35 +90,35 @@ class PackageBatch(models.Model):
             total_rate += rate
         return round(total_rate, 2)
 
-    def get_single(self): return self.get_hotels_total_rate() + self.get_transfer_rate()
+    def get_single(self): return self.get_total(self.get_hotels_total_rate() + self.get_transfer_rate())
 
-    def get_double(self): return self.get_hotels_total_rate(persons=2) + self.get_transfer_rate(persons=2)
+    def get_double(self): return self.get_total(self.get_hotels_total_rate(persons=2) + self.get_transfer_rate(persons=2))
 
-    def get_triple(self): return self.get_hotels_total_rate(persons=3, extra_bed=True) + self.get_transfer_rate(persons=3)
+    def get_triple(self): return self.get_total(self.get_hotels_total_rate(persons=3, extra_bed=True) + self.get_transfer_rate(persons=3))
 
-    def get_child_with_bed(self): return self.get_hotels_total_child_rate() + self.get_transfer_rate(with_child=True)
+    def get_child_with_bed(self): return self.get_total(self.get_hotels_total_child_rate() + self.get_transfer_rate(with_child=True))
 
-    def get_child_without_bed(self): return self.get_hotels_total_child_rate(with_bed=False) + self.get_transfer_rate(with_child=True)
+    def get_child_without_bed(self): return self.get_total(self.get_hotels_total_child_rate(with_bed=False) + self.get_transfer_rate(with_child=True))
 
-    def get_hotel_single(self): return self.get_hotels_total_rate()
+    def get_hotel_single(self): return self.get_total(self.get_hotels_total_rate())
 
-    def get_hotel_double(self): return self.get_hotels_total_rate(persons=2)
+    def get_hotel_double(self): return self.get_total(self.get_hotels_total_rate(persons=2))
 
-    def get_hotel_triple(self): return self.get_hotels_total_rate(persons=3, extra_bed=True)
+    def get_hotel_triple(self): return self.get_total(self.get_hotels_total_rate(persons=3, extra_bed=True))
 
-    def get_hotel_child_with_bed(self): return self.get_hotels_total_child_rate()
+    def get_hotel_child_with_bed(self): return self.get_total(self.get_hotels_total_child_rate())
 
-    def get_hotel_child_without_bed(self): return self.get_hotels_total_child_rate(with_bed=False)
+    def get_hotel_child_without_bed(self): return self.get_total(self.get_hotels_total_child_rate(with_bed=False))
 
-    def get_transfer_single(self): return self.get_transfer_rate()
+    def get_transfer_single(self): return self.get_total(self.get_transfer_rate())
 
-    def get_transfer_double(self): return self.get_transfer_rate(persons=2)
+    def get_transfer_double(self): return self.get_total(self.get_transfer_rate(persons=2))
 
-    def get_transfer_triple(self): return self.get_transfer_rate(persons=3)
+    def get_transfer_triple(self): return self.get_total(self.get_transfer_rate(persons=3))
 
-    def get_transfer_child_with_bed(self): return self.get_transfer_rate(with_child=True)
+    def get_transfer_child_with_bed(self): return self.get_total(self.get_transfer_rate(with_child=True))
 
-    def get_transfer_child_without_bed(self): return self.get_transfer_rate(with_child=True)
+    def get_transfer_child_without_bed(self): return self.get_total(self.get_transfer_rate(with_child=True))
 
     class Meta:
         ordering = ('id',)

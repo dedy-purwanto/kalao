@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Country(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    code = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=255)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="country_created")
@@ -16,8 +16,8 @@ class Country(models.Model):
 
 class CountryDestination(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    code = models.CharField(max_length=255, unique=True)
-    country = models.ForeignKey(Country, related_name='destinations', unique=True)
+    code = models.CharField(max_length=255)
+    country = models.ForeignKey(Country, related_name='destinations')
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, related_name="country_destination_created")
@@ -61,7 +61,7 @@ class ExchangeRate(models.Model):
     modified_by = models.ForeignKey(User, related_name="exchange_rate_modified")
 
     def __unicode__(self, *args, **kwargs):
-        return self.rate
+        return "%s" % self.rate
 
     class Meta:
         unique_together = ('date_from', 'date_to')
