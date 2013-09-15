@@ -39,6 +39,7 @@ class Room(models.Model):
 
 class Transfer(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    destination = models.ForeignKey(CountryDestination, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     rate = models.DecimalField(max_digits=30, decimal_places=2)
     date_created = models.DateTimeField(auto_now_add=True)

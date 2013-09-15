@@ -11,6 +11,7 @@ class Package(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField(default=True)
+    
 
     markup_amount = models.DecimalField(max_digits=30, decimal_places=2)
 
@@ -55,8 +56,8 @@ class PackageBatch(models.Model):
             rate_found = False
             total_rate += h.add_on_breakfast
             for r in rates:
-                d1 = date(self.date_from.year, r.date_from_month, r.date_from_day)
-                d2 = date(self.date_to.year, r.date_to_month, r.date_to_day)
+                d1 = date(r.date_from_year, r.date_from_month, r.date_from_day)
+                d2 = date(r.date_to_year, r.date_to_month, r.date_to_day)
                 if self.date_from >= d1 and self.date_to <= d2:
                     if not rate_found:
                         rate_found = True
