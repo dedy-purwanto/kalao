@@ -11,6 +11,7 @@ class Hotel(models.Model):
     child_with_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
     child_without_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
     breakfast_rate = models.DecimalField(max_digits=30, decimal_places=2)
+    adult_extra_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
@@ -25,7 +26,7 @@ class Hotel(models.Model):
 
 
 class Rate(models.Model):
-    hotel = models.ForeignKey(Hotel, related_name='rooms')
+    hotel = models.ForeignKey(Hotel, related_name='rates')
     room = models.ForeignKey(Room, related_name='rates')
     date_from_day = models.IntegerField() 
     date_from_month = models.IntegerField() 

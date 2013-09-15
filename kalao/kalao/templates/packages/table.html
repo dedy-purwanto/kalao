@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+Calculation for package {{package.name}}
+<style>
+    td{
+        border:1px solid black;
+        padding:3px;
+    }
+    th{
+    border:2px outset black;
+    padding:3px;
+
+    }
+
+</style>
+
+Hotel calculations:
+
+<table>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <th>Hotel {{forloop.counter}}</th> {% endfor %}
+        <th>From</th> <th>To</th> <th>Single</th> <th>Double</th> <th>Triple</th> <th>Child with bed</th> <th>Child without bed</th>
+    </tr>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <td>{{hotel.hotel.name}} (Room {{hotel.room.name}}) - {{hotel.length_of_stay}} days</td> {% endfor %}
+        <td> {% for b in package.batches.all %} {{b.date_from}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.date_to}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_hotel_single}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_hotel_double}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_hotel_triple}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_hotel_child_with_bed}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_hotel_child_without_bed}}<br /> {% endfor %} </td>
+    </tr>
+</table>
+<hr />
+Transfer calculations:
+
+<table>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <th>Hotel {{forloop.counter}}</th> {% endfor %}
+        <th>From</th> <th>To</th> <th>Single</th> <th>Double</th> <th>Triple</th> <th>Child with bed</th> <th>Child without bed</th>
+    </tr>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <td>{{hotel.hotel.name}} (Room {{hotel.room.name}}) - {{hotel.length_of_stay}} days</td> {% endfor %}
+        <td> {% for b in package.batches.all %} {{b.date_from}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.date_to}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_transfer_single}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_transfer_double}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_transfer_triple}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_transfer_child_with_bed}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_transfer_child_without_bed}}<br /> {% endfor %} </td>
+    </tr>
+</table>
+<hr/>
+Hotel + transfer calculations:
+
+<table>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <th>Hotel {{forloop.counter}}</th> {% endfor %}
+        <th>From</th> <th>To</th> <th>Single</th> <th>Double</th> <th>Triple</th> <th>Child with bed</th> <th>Child without bed</th>
+    </tr>
+    <tr>
+        {% for hotel in package.package_hotels.all %} <td>{{hotel.hotel.name}} (Room {{hotel.room.name}}) - {{hotel.length_of_stay}} days</td> {% endfor %}
+        <td> {% for b in package.batches.all %} {{b.date_from}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.date_to}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_single}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_double}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_triple}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_child_with_bed}}<br /> {% endfor %} </td>
+        <td> {% for b in package.batches.all %} {{b.get_child_without_bed}}<br /> {% endfor %} </td>
+    </tr>
+</table>
+
+{% endblock %}

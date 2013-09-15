@@ -8,6 +8,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'kalao.views.home', name='home'),
     url(r'^', include('home.urls')),
+    url(r'^packages/', include('packages.urls', namespace='packages')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
