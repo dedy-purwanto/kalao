@@ -5,9 +5,9 @@ from .models import Hotel, Rate
 
 class HotelAdmin(BaseAdmin, admin.ModelAdmin):
     list_filter = ('country', 'created_by', 'modified_by')
-    search_fields = ('name', 'child_with_bed_rate', 'child_without_bed_rate', 'breakfast_rate')
+    search_fields = ('name', 'child_with_bed_rate', 'child_without_bed_rate', 'adult_breakfast_rate')
     list_display = ('name', 'country',  \
-            'child_with_bed_rate', 'child_without_bed_rate', 'breakfast_rate',\
+            'child_with_bed_rate', 'child_without_bed_rate', 'adult_breakfast_rate',\
             'date_created', 'date_modified', 'created_by', 'modified_by')
     exclude = ('created_by', 'modified_by')
 
