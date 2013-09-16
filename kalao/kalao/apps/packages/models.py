@@ -45,8 +45,12 @@ class PackageBatch(models.Model):
             xrate = xrate[0]
 
 
-        cut = 2 if is_child else 1
-        total = float((float(float(self.package.markup_amount) / float(cut)) + float(float(amount)/float(persons))) / float(xrate.rate))
+        cut = float(2) if is_child else float(1)
+        #total = float((float(float(self.package.markup_amount) / float(cut)) + float(float(amount)/float(persons))) / float(xrate.rate))
+        total = amount + (float(self.package.markup_amount) / cut)
+        total /= persons
+        total /= float(xrate.rate)
+
         return "USD %s" % round(total,2)
 
     def get_hotels_total_rate(self, persons=1, extra_bed=False):
@@ -66,6 +70,7 @@ class PackageBatch(models.Model):
 
                         rate *= h.number_of_nights
 
+
                         if persons < 3:
                             rate += 0 * h.number_of_bonus_nights
                         else:
@@ -75,6 +80,7 @@ class PackageBatch(models.Model):
                         rate += hotel.adult_breakfast_rate * persons * h.number_of_bonus_nights
 
                         total_rate += rate
+
 
         return round(total_rate,2)
 
