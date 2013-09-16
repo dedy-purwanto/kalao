@@ -36,7 +36,7 @@ class PackageBatch(models.Model):
     created_by = models.ForeignKey(User, related_name="batches_created")
     modified_by = models.ForeignKey(User, related_name="batches_modified")
 
-    def get_total(self, amount):
+    def get_total(self, amount, is_child=False):
         now = datetime.now()
         xrate = ExchangeRate.objects.filter(date_from__lte=now, date_to__gte=now)
         if xrate.count() == 0:
@@ -44,7 +44,9 @@ class PackageBatch(models.Model):
         else:
             xrate = xrate[0]
 
-        total = float((float(self.package.markup_amount) + float(amount)) / float(xrate.rate))
+
+        cut = 2 if is_child else 1
+        total = float((float(float(self.package.markup_amount) / float(cut)) + float(amount)) / float(xrate.rate))
         return "USD %s" % round(total,2)
 
     def get_hotels_total_rate(self, persons=1, extra_bed=False):
@@ -54,7 +56,6 @@ class PackageBatch(models.Model):
             room = h.room
             rates = Rate.objects.filter(hotel=hotel, room=room)
             rate_found = False
-            total_rate += h.add_on_breakfast
             for r in rates:
                 d1 = date(r.date_from_year, r.date_from_month, r.date_from_day)
                 d2 = date(r.date_to_year, r.date_to_month, r.date_to_day)
@@ -65,7 +66,14 @@ class PackageBatch(models.Model):
                         if extra_bed:
                             rate += hotel.adult_extra_bed_rate
                         rate /= persons
-                        rate *= h.length_of_stay
+                        rate *= h.number_of_nights
+
+                        if h.number_of_bonus_nights > 0:
+                            if persons < 3:
+                                rate += hotel.adult_breakfast_rate * h.number_of_bonus_nights
+                            else:
+                                rate += hotel.adult_extra_bed_rate * h.number_of_bonus_nights
+
                         total_rate += rate
 
 
@@ -79,7 +87,10 @@ class PackageBatch(models.Model):
                 rate = hotel.child_with_bed_rate
             else:
                 rate = hotel.child_without_bed_rate
-            rate += h.add_on_breakfast
+            rate += hotel.child_breakfast_rate
+
+            rate *= h.number_of_nights + h.number_of_bonus_nights
+
             total_rate += rate
         return round(total_rate, 2)
 
@@ -137,8 +148,8 @@ class PackageHotel(models.Model):
     package = models.ForeignKey(Package, related_name='package_hotels')
     hotel = models.ForeignKey(Hotel, related_name='package_hotels')
     room = models.ForeignKey(Room, related_name='package_hotels')
-    length_of_stay = models.IntegerField()
-    add_on_breakfast = models.DecimalField(max_digits=30, decimal_places=2, default=0)
+    number_of_nights = models.IntegerField()
+    number_of_bonus_nights = models.IntegerField()
     transfer = models.ForeignKey(Transfer, blank=True, null=True)
 
     date_created = models.DateTimeField(auto_now_add=True)

@@ -2,7 +2,8 @@
 
 {% block content %}
 
-Calculation for package {{package.name}}
+{% for package in packages %}
+<strong>Calculation for package {{package.name}}</strong><br />
 <style>
     td{
         border:1px solid black;
@@ -72,5 +73,6 @@ Hotel + transfer calculations:
         <td> {% for b in package.batches.all %} {{b.get_child_without_bed}}<br /> {% endfor %} </td>
     </tr>
 </table>
+{% endfor %}
 
 {% endblock %}

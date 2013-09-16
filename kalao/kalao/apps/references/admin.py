@@ -1,7 +1,7 @@
 from django.contrib import admin
 from core.admin import BaseAdmin
 
-from .models import Country, CountryDestination, Room, Transfer, ExchangeRate
+from .models import Country, CountryDestination, Room, Transfer, ExchangeRate, Star
 
 class RoomAdmin(BaseAdmin, admin.ModelAdmin):
     list_filter = ( 'created_by', 'modified_by')
@@ -28,8 +28,13 @@ class ExchangeRateAdmin(BaseAdmin, admin.ModelAdmin):
     list_display = ('rate', 'date_from', 'date_to',  'date_created', 'date_modified', 'created_by', 'modified_by')
     exclude = ('created_by', 'modified_by')
 
+class StarAdmin(BaseAdmin, admin.ModelAdmin):
+    list_display = ('name',)
+    exclude = ('created_by', 'modified_by')
+
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(CountryDestination, CountryDestinationAdmin)
 admin.site.register(Transfer, TransferAdmin)
 admin.site.register(ExchangeRate, ExchangeRateAdmin)
+admin.site.register(Star, StarAdmin)

@@ -14,6 +14,16 @@ class Country(models.Model):
     def __unicode__(self, *args, **kwargs):
         return self.name
 
+class Star(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, related_name="star_created")
+    modified_by = models.ForeignKey(User, related_name="star_modified")
+
+    def __unicode__(self, *args, **kwargs):
+        return self.name
+
 class CountryDestination(models.Model):
     name = models.CharField(max_length=255, unique=True)
     code = models.CharField(max_length=255)

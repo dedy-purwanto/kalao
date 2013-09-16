@@ -18,5 +18,6 @@ class RateAdmin(BaseAdmin, admin.ModelAdmin):
             'date_created', 'date_modified', 'created_by', 'modified_by')
     exclude = ('created_by', 'modified_by')
 
+
 admin.site.register(Hotel, HotelAdmin)
 admin.site.register(Rate, RateAdmin)

@@ -9,9 +9,14 @@ class PackageTableView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(PackageTableView, self).get_context_data(**kwargs)
 
-        package = Package.objects.get(pk=self.kwargs['pk'])
+        pk = self.kwargs['pk']
+        pks = self.request.GET.get('pks', None)
 
-        context['package'] = package
+        pks = pks.split(',') if pks and len(pks) > 0 else [pk]
+
+        packages = Package.objects.filter(pk__in=pks)
+
+        context['packages'] = packages
 
         return context
 

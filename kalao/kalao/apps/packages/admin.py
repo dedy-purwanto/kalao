@@ -1,5 +1,7 @@
 from django.contrib import admin
 from core.admin import BaseAdmin
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 
 from .models import Package, PackageBatch, Remark, PackageHotel
 
@@ -25,5 +27,14 @@ class PackageAdmin(BaseAdmin, admin.ModelAdmin):
     exclude = ('created_by', 'modified_by')
 
     inlines = (PackageBatchInline, PackageHotelInline, RemarkInline)
+
+    def bulk_table(self, request, queryset):
+        pks = [str(q.pk) for q in queryset]
+        url = "%s?%s" % (reverse("packages:table", args=[0]), "pks=%s" % ','.join(pks))
+        return redirect(url)
+
+    bulk_table.short_description = "View selected packages calculation"
+
+    actions = [bulk_table, ]
 
 admin.site.register(Package, PackageAdmin)

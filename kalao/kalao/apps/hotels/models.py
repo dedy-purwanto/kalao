@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from references.models import Country, Room, CountryDestination
+from references.models import Country, Room, CountryDestination, Star
 
 # Create your models here.
 class Hotel(models.Model):
@@ -9,12 +9,12 @@ class Hotel(models.Model):
     country = models.ForeignKey(Country, related_name='hotels')
     destination = models.ForeignKey(CountryDestination, related_name='hotels', blank=True, null=True)
 
-    stars = models.IntegerField(blank=True, null=True)
+    star = models.ForeignKey(Star, blank=True, null=True)
 
     child_with_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
     child_without_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
-    adult_breakfast_rate = models.DecimalField(max_digits=30, decimal_places=2, blank=True, null=True)
-    child_breakfast_rate = models.DecimalField(max_digits=30, decimal_places=2, blank=True, null=True)
+    adult_breakfast_rate = models.DecimalField(max_digits=30, decimal_places=2)
+    child_breakfast_rate = models.DecimalField(max_digits=30, decimal_places=2)
     adult_extra_bed_rate = models.DecimalField(max_digits=30, decimal_places=2)
 
     date_created = models.DateTimeField(auto_now_add=True)
