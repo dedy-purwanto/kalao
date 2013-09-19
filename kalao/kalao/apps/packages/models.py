@@ -47,8 +47,8 @@ class PackageBatch(models.Model):
 
         cut = float(2) if is_child else float(1)
         #total = float((float(float(self.package.markup_amount) / float(cut)) + float(float(amount)/float(persons))) / float(xrate.rate))
-        total = amount + (float(self.package.markup_amount) / cut)
-        total /= persons
+        total = amount / persons
+        total += (float(self.package.markup_amount) / cut)
         total /= float(xrate.rate)
 
         return "USD %s" % round(total,2)
